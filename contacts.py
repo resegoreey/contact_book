@@ -65,15 +65,16 @@ def display_contacts():
     
     
 while True:
+    try:
         
         print("📱Hello, your contacts will be kept safe!")
         print("-------📖CONTACT BOOK📖---------")
 
         print("""What would you like to do?
         1. Add  contact
-        2. Search  contact
-        3. Delete  contact
-        4. Display contacts
+        2. Display contacts
+        3. Search  contact
+        4. Delete  contact
         5. Exit""")
 
         print("----------------------------------")
@@ -87,27 +88,29 @@ while True:
         
 
         elif user_action == "2":
-            #Accessing/ searching the contacts name
-            search_contact()
-        
-        elif user_action == "3":
-           delete_contact()
-
-        elif user_action == "4":
-           if user_contacts:
-            display_contacts()
-            print("----------------------------------")
-           else:
+            if user_contacts:
+                display_contacts()
+                print("----------------------------------")
+            else:
                 print("❌No contacts to display")
                
                 print("----------------------------------")
+        
+        elif user_action == "3":
+            #Accessing/ searching the contacts name
+           search_contact()
+
+        elif user_action == "4":
+          delete_contact()
+
         elif user_action == "5":
             print("👋Bye Bye")
             break
 
         else:
             print("❌Make a valid choice, choose between 1 and 4")
-            
+    except:
+        raise Exception("Invalid")          
 
 
 
