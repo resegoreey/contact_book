@@ -15,7 +15,7 @@ def save_contacts(user_contacts):
         return json.dump(user_contacts, file, indent=4)
 
 
-def add_contact():
+def add_contact(user_contacts):
     while True:
 
         name = input("Enter contact name: ").capitalize()
@@ -49,7 +49,7 @@ def add_contact():
 
     print("----------------------------------------------")
 
-def search_contact():
+def search_contact(user_contacts):
     print("----🔎 Searching for a contact----")
     access_name = input("Search for a name: ").capitalize().strip()
 
@@ -61,7 +61,7 @@ def search_contact():
         print(f"❌ {access_name} doesn't exist")
     print("--------------------------------------")
 
-def delete_contact():
+def delete_contact(user_contacts):
      #removing contacts
     print("--------Delete a contact-----------")
     remove_contact_name = input("Enter contact name to delete: ").capitalize()
@@ -103,12 +103,12 @@ def main():
 
             print("----------------------------------")
 
-            user_action = input("Choose from above options(1-4): ")
+            user_action = input("Choose an option(1-5): ")
             print("-------------------------------------")
 
 
             if user_action == "1":
-                add_contact()
+                add_contact(user_contacts)
             
 
             elif user_action == "2":
@@ -116,19 +116,19 @@ def main():
             
             elif user_action == "3":
                 #Accessing/ searching the contacts name
-                search_contact()
+                search_contact(user_contacts)
 
             elif user_action == "4":
-                delete_contact()
+                delete_contact(user_contacts)
 
             elif user_action == "5":
                 print("👋Bye Bye")
                 break
 
             else:
-                print("❌Make a valid choice, choose between 1 and 4")
-        except ValueError:
-            print("print numbers only")
+                print("❌Make a valid choice, choose between 1 and 5")
+        except Exception as e:
+            print(f"⚠️ An unexpected error occurred: {e}")
                       
 
 
