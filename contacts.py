@@ -84,6 +84,22 @@ def display_contacts():
             print(f"""📞 {name}:
             📱 Phone: {details["Number"]}
             📧 Email: {details["Email"]}""")
+
+def edit_contact(user_contacts):
+    print("-------Edit Contact------")
+    name = input("Enter the name you want to edit: ").capitalize()
+    if name not in user_contacts:
+        print(f"❌ {name} can't be found!")
+
+    new_number = input("Enter new number or press enter to leave the current on: ")
+    new_email = input("Enter new email or press enter to leave the current on: ")
+
+    if new_number:
+        user_contacts[name]["Number"] = new_number
+        save_contacts(user_contacts)
+    if new_email:
+        user_contacts[name]["Email"] = new_email
+        save_contacts(user_contacts)
     
 def main():
     global user_contacts
@@ -99,11 +115,12 @@ def main():
             2. Display contacts
             3. Search  contact
             4. Delete  contact
-            5. Exit""")
+            5. Edit a contact
+            6. Exit""")
 
             print("----------------------------------")
 
-            user_action = input("Choose an option(1-5): ")
+            user_action = input("Choose an option(1-6): ")
             print("-------------------------------------")
 
 
@@ -120,21 +137,19 @@ def main():
 
             elif user_action == "4":
                 delete_contact(user_contacts)
-
+            
             elif user_action == "5":
+                edit_contact(user_contacts)
+
+            elif user_action == "6":
                 print("👋Bye Bye")
                 break
 
             else:
-                print("❌Make a valid choice, choose between 1 and 5")
+                print("❌Make a valid choice, choose between 1 to 6")
         except Exception as e:
             print(f"⚠️ An unexpected error occurred: {e}")
                       
-
-
-
-#changing detials to be added soon
-
 
 
 if __name__ == '__main__':
