@@ -1,4 +1,4 @@
-from storage import load_contacts, save_contacts
+from storage.storage import load_contacts, save_contacts
 from validators import validate_name, validate_phone, validate_email
 
 def add_contact(contacts):
