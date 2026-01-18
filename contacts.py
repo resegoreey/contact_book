@@ -1,152 +1,148 @@
-import json
-import os
+from storage import load_contacts, save_contacts
+from validators import validate_name, validate_phone, validate_email
 
-
-file_name = "contacts.json"
-
-def load_contacts():
-    if os.path.exists(file_name):
-        with open(file_name, 'r') as file:
-            return json.load(file)
-    return {}
-
-def save_contacts(user_contacts):
-    with open(file_name, 'w') as file:
-        return json.dump(user_contacts, file, indent=4)
-
-
-def add_contact(user_contacts):
+def add_contact(contacts):
     while True:
 
-        name = input("Enter contact name: ").capitalize()
-        if len(name) < 3 or name == '':
-            print("Name can't be empty or shorter than 2 characters")
+        name = input("Enter contact name: ").capitalize().strip()
+        if not validate_name(name):
+            print("Name must be at least 3 characters long.")
     
         else:
             break
 
     while True:
         number = input("Enter phone number: ")
-        if len(number) < 10 or number[0] != "0":
+
+        if not validate_phone(number):
             print("Make sure number has 10 digits and starts with zero(0)")
         else:
             break
 
     while True:
         email = input("Enter email address: ")
-        if "@" not in email or ".com" not in email:
-            print("Make sure email has the '@' and ends with '.com'")
+        
+        if not validate_email(email):
+            print("Invalid email format. Please try again.")
         else:
             break
 
-    if name in user_contacts:
-        print(f"❌ {name} already exist")
+    if name in contacts:
+        print(f"{name} already exist")
     
-    else:
-        user_contacts[name] = {"Number": number, "Email": email}
-        print(f"Added 🙋🏽{name} with number: 📞 {number} and email: 📧{email}")
-        save_contacts(user_contacts)
+    contacts[name] = {"Number": number, "Email": email}
+    save_contacts(contacts)
+    print(f"Added 🙋🏽 {name} with number: 📞 {number} and email: 📧 {email}")
+    
 
     print("----------------------------------------------")
 
-def search_contact(user_contacts):
-    print("----🔎 Searching for a contact----")
-    access_name = input("Search for a name: ").capitalize().strip()
+def display_contacts(contacts):
+    
+    if not contacts:
+            print("No contacts to display")
+            return
+                
+    print("-------📖Contact List-----------")
+    
+    for name, details in contacts.items():
+        print(f"""🧑 {name}:
+        📞 Phone: {details["Number"]}
+        📧 Email: {details["Email"]}""")
 
-    if access_name in user_contacts:
-        print(f"""Name: 🧑🏽{access_name}
-        Number: 📞 {user_contacts[access_name]["Number"]}
-        Email: 📧 {user_contacts[access_name]["Email"]}""")
-    else:
-        print(f"❌ {access_name} doesn't exist")
+
+def search_contact(contacts):
+    print("----🔎 Searching for a contact----")
+    name = input("Search name: ").capitalize().strip()
+    contact = contacts.get(name)
+
+    if not contact:
+        print(f"Contact not found")
+    
+    print(f"""
+        🧑 {name}
+        📞 Phone: {contact["Number"]}
+        📧 Email: {contact["Email"]}
+""")
     print("--------------------------------------")
 
-def delete_contact(user_contacts):
+def delete_contact(contacts):
      #removing contacts
     print("--------Delete a contact-----------")
-    remove_contact_name = input("Enter contact name to delete: ").capitalize()
-    if remove_contact_name in user_contacts:
-        del user_contacts[remove_contact_name]
-        print(f"✅ You deleted {remove_contact_name}")
-        save_contacts(user_contacts)
-    else:
-        print(f"❌ {remove_contact_name} does not exist")
+    name = input("Enter contact name to delete: ").capitalize().strip()
+
+    if not name in contacts:
+        print("Contact not found")
+    
+    del contacts[name]
+    save_contacts(contacts)
+    print(f"{name} deleted")
+    
     print("--------------------------------------")
 
-def display_contacts():
-    print("-------📖Contact List-----------")
-    if not user_contacts:
-            print("❌No contacts to display")
-                
-            print("----------------------------------")
-    else:
-        for name, details in user_contacts.items():
-            print(f"""📞 {name}:
-            📱 Phone: {details["Number"]}
-            📧 Email: {details["Email"]}""")
 
-def edit_contact(user_contacts):
+def edit_contact(contacts):
     print("-------Edit Contact------")
-    name = input("Enter the name you want to edit: ").capitalize()
-    if name not in user_contacts:
-        print(f"❌ {name} can't be found!")
+    name = input("Enter the name you want to edit: ").strip().capitalize()
+    if name not in contacts:
+        print(f"{name} can't be found!")
+        return
 
-    new_number = input("Enter new number or press enter to leave the current on: ")
-    new_email = input("Enter new email or press enter to leave the current on: ")
+    new_number = input("New number (enter to skip): ")
+    new_email = input("New email (enter to skip): ")
 
-    if new_number:
-        user_contacts[name]["Number"] = new_number
-        save_contacts(user_contacts)
-    if new_email:
-        user_contacts[name]["Email"] = new_email
-        save_contacts(user_contacts)
+    if new_number and validate_phone(new_number):
+        contacts[name]["Number"] = new_number
+
+    if new_email and validate_email(new_email):
+        contacts[name]["Email"] = new_email
+
+    save_contacts(contacts)
+    print(f"{name}'s contact updated.")
     
 def main():
-    global user_contacts
-    user_contacts = load_contacts()
+    contacts = load_contacts()
     while True:
+        
+        print("-------📖CONTACT BOOK📖---------")
+
+        print("""What would you like to do?
+        1. Add  contact
+        2. Display contacts
+        3. Search  contact
+        4. Delete  contact
+        5. Edit a contact
+        6. Exit""")
+
+        print("----------------------------------")
+
+        choice = input("Choose an option(1-6): ")
+        print("-------------------------------------")
         try:
-            
-            print("📱Hello, your contacts will be kept safe!")
-            print("-------📖CONTACT BOOK📖---------")
 
-            print("""What would you like to do?
-            1. Add  contact
-            2. Display contacts
-            3. Search  contact
-            4. Delete  contact
-            5. Edit a contact
-            6. Exit""")
-
-            print("----------------------------------")
-
-            user_action = input("Choose an option(1-6): ")
-            print("-------------------------------------")
-
-
-            if user_action == "1":
-                add_contact(user_contacts)
+             if choice == "1":
+                add_contact(contacts)
             
 
-            elif user_action == "2":
-                display_contacts()
+             elif choice == "2":
+                display_contacts(contacts)
             
-            elif user_action == "3":
+             elif choice == "3":
                 #Accessing/ searching the contacts name
-                search_contact(user_contacts)
+                search_contact(contacts)
 
-            elif user_action == "4":
-                delete_contact(user_contacts)
+             elif choice == "4":
+                delete_contact(contacts)
             
-            elif user_action == "5":
-                edit_contact(user_contacts)
+             elif choice == "5":
+                edit_contact(contacts)
 
-            elif user_action == "6":
-                print("👋Bye Bye")
+             elif choice == "6":
+                print("Goodbye")
                 break
 
-            else:
-                print("❌Make a valid choice, choose between 1 to 6")
+             else:
+                print("Make a valid choice, choose between 1 to 6")
         except Exception as e:
             print(f"⚠️ An unexpected error occurred: {e}")
                       
