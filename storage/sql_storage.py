@@ -16,7 +16,7 @@ def get_all_contacts():
     
 def get_contact(name: str)-> Optional[Tuple[str, str, str]]:
     with get_connection() as conn:
-        conn.execute(
+        return conn.execute(
             "SELECT name, number, email FROM contacts WHERE LOWER(name) = LOWER(?)", (name.strip(),)
         ).fetchone()
     
