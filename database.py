@@ -4,7 +4,7 @@ import sqlite3
 DB_NAME = 'contacts.db'
 
 def get_connection():
-    print("📁 Using DB at:", os.path.abspath(DB_NAME))
+    # print("📁 Using DB at:", os.path.abspath(DB_NAME))
     return sqlite3.connect(DB_NAME)
 
 def create_table():
